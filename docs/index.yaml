@@ -3,12 +3,12 @@ entries:
   mongodb-cadastro:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2025-11-28T23:40:23.04106494-03:00"
+    created: "2025-12-02T14:14:51.420108706-03:00"
     description: A Helm chart for Kubernetes
     digest: b1d34eeb0c501a4791f431672cc1c14f6b096bcceda9e11cbab5cd5a138959fc
-    name: mongodb
+    name: mongodb-cadastro
     type: application
     urls:
-    - charts/mongodb-0.1.0.tgz
+    - https://patrickpk4.github.io/mongodb/mongodb-0.1.0.tgz
     version: 0.1.0
-generated: "2025-11-28T23:40:23.037938512-03:00"
+generated: "2025-12-02T14:14:51.417682086-03:00"
