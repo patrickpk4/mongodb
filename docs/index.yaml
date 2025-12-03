@@ -9,6 +9,6 @@ entries:
     name: mongodb
     type: application
     urls:
-    - https://patrickpk4.github.io/mongodb/mongodb-0.1.1.tgz
-    version: 0.1.1
+    - https://patrickpk4.github.io/mongodb/mongodb-0.1.2.tgz
+    version: 0.1.2
 generated: "2025-12-02T14:14:51.417682086-03:00"
