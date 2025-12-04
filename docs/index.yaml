@@ -3,11 +3,12 @@ entries:
   mongodb:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2025-12-02T14:14:51.420108706-03:00"
+    created: "2025-12-04T15:00:25.632894163-03:00"
     description: A Helm chart for Kubernetes
-    digest: b1d34eeb0c501a4791f431672cc1c14f6b096bcceda9e11cbab5cd5a138959fc
+    digest: f404006eadb56aed0033ecc8fb14043700130d4e3b510f7d8b1e747d7f2475da
     name: mongodb
     type: application
     urls:
     - https://patrickpk4.github.io/mongodb/mongodb-0.1.3.tgz
-    version: 0.1.3                                        generated: "2025-12-02T14:14:51.417682086-03:00"    
+    version: 0.1.3
+generated: "2025-12-04T15:00:25.631119173-03:00"
