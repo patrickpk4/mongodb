@@ -1,70 +1,148 @@
-# MongoDB Helm Chart (Dependency)
+MongoDB Helm Chart
 
-Este repositório contém um Helm Chart do **MongoDB** projetado para ser
-utilizado como **dependência** em aplicações, como por exemplo a sua
-API.
+Este repositório contém um Helm Chart completo para MongoDB, projetado tanto para uso isolado quanto como dependência em aplicações como APIs .NET, Node.js, Go, Python etc.
 
-##  Objetivo do Chart
+O objetivo deste chart é fornecer uma instalação realista, configurável e extensível do MongoDB dentro de um cluster Kubernetes.
 
-Fornecer uma forma simples e consistente de: - Implantar uma instância
-MongoDB em Kubernetes - Ser usado como dependência (`charts/`) em outros
-Helm Charts - Permitir configuração via `values.yaml` da aplicação
-principal
+ Funcionalidades
 
-##  Como usar este Chart como dependência
+StatefulSet com armazenamento persistente
 
-### 1. Adicione a seção `dependencies` no `Chart.yaml` da sua aplicação:
+Service ClusterIP configurável
 
-``` yaml
+Autoescalonamento (HPA) opcional
+
+NetworkPolicy opcional
+
+RBAC (Role e RoleBinding) opcionais
+
+Configuração de usuário e senha via Secret
+
+Suporte a Secret externo
+
+Pode ser usado como subchart (dependency)
+
+Storage configurável com PVC
+
+VolumeMount customizável
+
+ Instalação
+1. Adicionar o repositório
+helm repo add mongo-dep https://patrickpk4.github.io/mongodb/
+helm repo update
+
+2. Instalar o chart
+helm install my-mongo mongo-dep/mongodb
+
+ Configurações Disponíveis (values.yaml)
+
+Abaixo estão todas as funcionalidades incluídas, com explicação.
+
+ Configuração do Secret
+Criar Secret automaticamente
+secret:
+  create: true
+  existingSecret: ""
+  usernameKey: Mongo__User
+  passwordKey: Mongo__Password
+  username: mongouser
+  password: mongopwd
+
+Usar Secret já existente
+secret:
+  create: false
+  existingSecret: "mongodb-secret"
+  usernameKey: Mongo__User
+  passwordKey: Mongo__Password
+
+ Habilitar/Desabilitar o Chart como Dependência
+mongodb:
+  enabled: true
+
+ Configuração de Rede
+service:
+  type: ClusterIP
+  port: 27017
+
+ Volumes e Persistência
+VolumeMount
+volumeMounts:
+  - name: mongodb-data
+    mountPath: /data/db
+    readOnly: false
+
+PVC com storageClassNfs
+volumeclaimtemplates:
+  - metadata:
+      name: mongodb-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: mongodb-nfs
+      resources:
+        requests:
+          storage: 1Gi
+
+ Autoescalonamento (HPA)
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+ RBAC (Role e RoleBinding)
+role:
+  enabled: true
+
+rolebinding:
+  enabled: true
+
+ NetworkPolicy
+networkpolicy:
+  enabled: true
+
+ Uso como Dependência
+
+No Chart.yaml da API:
+
 dependencies:
   - name: mongodb
-    version: 0.1.0
-    repository: "https://github.com/patrickpk4/mongodb"
-```
+    version: "0.1.3"
+    repository: "https://patrickpk4.github.io/mongodb/"
 
-### 2. Configure os valores do MongoDB no `values.yaml` da sua aplicação:
 
-``` yaml
+No values.yaml da API:
+
 mongodb:
-  image:
-    tag: "7.0"
-  auth:
-    enabled: true
-    rootUser: admin
-    rootPassword: "MinhaSenha123"
-```
+  enabled: true
+  secret:
+    create: false
+    existingSecret: "mongodb-secret"
+    usernameKey: Mongo__User
+    passwordKey: Mongo__Password
 
-### 3. Atualize as dependências:
+ Estrutura do Repositório
+mongodb/
+ ├── charts/
+ ├── templates/
+ │    ├── statefulset.yaml
+ │    ├── service.yaml
+ │    ├── secret.yaml
+ │    ├── role.yaml
+ │    ├── rolebinding.yaml
+ │    ├── networkpolicy.yaml
+ │    ├── hpa.yaml
+ │    └── _helpers.tpl
+ ├── Chart.yaml
+ ├── values.yaml
+ └── README.md
 
-``` bash
-helm dependency update
-```
+ Testes
+kubectl get pods
+kubectl logs statefulset/mongodb-statefulset -f
+kubectl exec -it mongodb-statefulset-0 -- mongosh
 
-Agora o MongoDB será incluído automaticamente no deploy da sua
-aplicação.
+ Contribuições
 
-##  Estrutura do repositório
-
-    mongodb-chart/
-      ├── Chart.yaml
-      ├── values.yaml
-      ├── templates/
-      │     ├── deployment.yaml
-      │     ├── service.yaml
-      │     ├── secret.yaml
-      │     └── pvc.yaml
-
-##  Configurações principais
-
--   **Autenticação habilitada**
--   **PVC para persistência**
--   **Service para comunicação interna**
--   **Configuração compatível para uso como dependência Helm**
-
-##  Contribuições
-
-Sinta-se à vontade para enviar PRs, abrir issues ou deixar sugestões.
-
-------------------------------------------------------------------------
-
-Feito com ☕ e Kubernetes.
+Contribuições são bem-vindas!
+Pull Requests, Issues e sugestões são aceitas.
